@@ -4,7 +4,7 @@
 \alias{prepareData}
 \title{Prepare data for plotting}
 \usage{
-prepareData(experiment, assay = 1, autoScale = TRUE, logTransform = TRUE)
+prepareData(experiment, assay = 1, scaling = "auto", log = exp(1))
 }
 \arguments{
 \item{experiment}{SummarizedExperiment object with at least

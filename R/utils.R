@@ -11,13 +11,9 @@
 #' @param logTransform Should the data be log transformed?
 #' Defaults to `TRUE`
 #' @importFrom ggplot2 ggplot aes geom_tile theme element_text
-prepareData <- function(experiment, assay = 1, autoScale = TRUE,
-                        logTransform = TRUE){
-  m <- assay(experiment, assay)
+prepareData <- function(experiment, assay = 1, scaling = "auto", log = exp(1)){
 
-  if (logTransform) m <- log(m)
-
-  if (autoScale) m <- scale(na.omit(m), center = TRUE, scale = TRUE)
+  m <- transformMatrix(assay(experiment, assay), log, scaling)
 
   cols <- rep(colData(experiment), nrow(m))
   cols <- cols[order(rownames(cols)), , drop = F]
@@ -26,4 +22,30 @@ prepareData <- function(experiment, assay = 1, autoScale = TRUE,
   m <- as.data.frame(stack(m))
   m <- data.frame(m, cols)
   m[complete.cases(m) & is.finite(m$value), ]
+}
+
+transformMatrix <- function(matrix, log = NULL, scaling = NULL){
+  matrix <- as.matrix(matrix)
+
+  if (!is.null(log)) {
+    matrix <- log(matrix, base = log)
+    matrix[is.infinite(matrix)] <- 0
+  }
+
+  if (!is.null(scaling)) {
+    matrix <- switch (scaling,
+      "auto" = scale(na.omit(matrix), center = TRUE, scale = TRUE),
+      "pareto" = apply(matrix, 2, function(x) (x - mean(x)) / sqrt(sd(x))),
+      matrix
+    )
+  }
+
+  matrix
+}
+
+getAssay <- function(experiment, assay){
+  if (is(assay, "numeric")) {
+    assay <- assayNames(experiment)[assay]
+  }
+  assay
 }
