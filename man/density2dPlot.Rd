@@ -4,7 +4,14 @@
 \alias{density2dPlot}
 \title{2D density plot}
 \usage{
-density2dPlot()
+density2dPlot(
+  experiment,
+  assay = 1,
+  annotate = NULL,
+  scaling = "auto",
+  log = exp(1),
+  ...
+)
 }
 \description{
 2D density plot

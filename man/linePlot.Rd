@@ -4,7 +4,28 @@
 \alias{linePlot}
 \title{Line Plot}
 \usage{
-linePlot(experiment, assay = 1, scaling = "auto", log = exp(1))
+linePlot(
+  experiment,
+  assay = 1,
+  color = NULL,
+  scaling = "auto",
+  log = exp(1),
+  transpose = FALSE,
+  ...
+)
+}
+\arguments{
+\item{experiment}{SummarizedExperiment object with at least
+one (matrix) assay.}
+
+\item{assay}{Name or index of the assay to plot. Defaults to
+the first assay in [assayNames].}
+
+\item{scaling}{Should autoscaling be performed on the assay?
+Defaults to `TRUE`.}
+
+\item{log}{Should the data be log transformed?
+Defaults to `TRUE`}
 }
 \description{
 Line Plot

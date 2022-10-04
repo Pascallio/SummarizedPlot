@@ -6,26 +6,26 @@
 #' one (matrix) assay.
 #' @param assay Name or index of the assay to plot. Defaults to
 #' the first assay in [assayNames].
-#' @param autoScale Should autoscaling be performed on the assay?
+#' @param scaling Should autoscaling be performed on the assay?
 #' Defaults to `TRUE`.
-#' @param logTransform Should the data be log transformed?
+#' @param log Should the data be log transformed?
 #' Defaults to `TRUE`
 #' @importFrom ggplot2 ggplot aes geom_tile theme element_text
-prepareData <- function(experiment, assay = 1, scaling = "auto", log = exp(1)){
+prepareData <- function(experiment, assay = 1, scaling = "auto",
+                        log = exp(1), transpose = FALSE){
 
-  m <- transformMatrix(assay(experiment, assay), log, scaling)
-
-  cols <- rep(colData(experiment), nrow(m))
-  cols <- cols[order(rownames(cols)), , drop = F]
-  rownames(cols) <- seq_len(nrow(cols))
-
-  m <- as.data.frame(stack(m))
-  m <- data.frame(m, cols)
-  m[complete.cases(m) & is.finite(m$value), ]
+  assay <- assay(experiment, assay)
+  m <- reshape2::melt(transformMatrix(assay, log, scaling))
+  colnames(m) <- c("row", "col", "value")
+  if (transpose) colnames(m) <- c("col", "row", "value")
+  m <- cbind(m, colData(experiment), rowData(experiment), row.names = NULL)
+  m[is.finite(m$value), ]
 }
 
-transformMatrix <- function(matrix, log = NULL, scaling = NULL){
+transformMatrix <- function(matrix, log = NULL, scaling = NULL,
+                            transpose = FALSE){
   matrix <- as.matrix(matrix)
+  if (transpose) matrix <- t(matrix)
 
   if (!is.null(log)) {
     matrix <- log(matrix, base = log)
@@ -49,3 +49,5 @@ getAssay <- function(experiment, assay){
   }
   assay
 }
+
+

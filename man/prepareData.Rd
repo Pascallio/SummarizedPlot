@@ -4,7 +4,13 @@
 \alias{prepareData}
 \title{Prepare data for plotting}
 \usage{
-prepareData(experiment, assay = 1, scaling = "auto", log = exp(1))
+prepareData(
+  experiment,
+  assay = 1,
+  scaling = "auto",
+  log = exp(1),
+  transpose = FALSE
+)
 }
 \arguments{
 \item{experiment}{SummarizedExperiment object with at least
@@ -13,10 +19,10 @@ one (matrix) assay.}
 \item{assay}{Name or index of the assay to plot. Defaults to
 the first assay in [assayNames].}
 
-\item{autoScale}{Should autoscaling be performed on the assay?
+\item{scaling}{Should autoscaling be performed on the assay?
 Defaults to `TRUE`.}
 
-\item{logTransform}{Should the data be log transformed?
+\item{log}{Should the data be log transformed?
 Defaults to `TRUE`}
 }
 \description{
